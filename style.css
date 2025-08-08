@@ -1,109 +1,115 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // フォームの要素をすべて取得
-    const form = document.getElementById('search-form');
-    const allWordsInput = document.getElementById('all-words');
-    const exactPhraseInput = document.getElementById('exact-phrase');
-    const anyWordsTextarea = document.getElementById('any-words');
-    const noneWordsInput = document.getElementById('none-words');
-    const hashtagsInput = document.getElementById('hashtags');
-    const fromUserInput = document.getElementById('from-user');
-    const toUserInput = document.getElementById('to-user');
-    const mentionUserInput = document.getElementById('mention-user');
-    const repliesFilter = document.getElementById('replies-filter');
-    const linksFilter = document.getElementById('links-filter');
-    const minRepliesInput = document.getElementById('min-replies');
-    const minLikesInput = document.getElementById('min-likes');
-    const minRetweetsInput = document.getElementById('min-retweets');
-    const sinceDateInput = document.getElementById('since-date');
-    const untilDateInput = document.getElementById('until-date');
+/* === 全体の設定 === */
+body {
+    font-family: 'Helvetica Neue', 'Arial', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Meiryo', sans-serif;
+    background-color: #f0f4f8; /* 少し青みがかった背景色 */
+    color: #2d3748; /* 可読性の高いダークグレー */
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 0;
+}
 
-    const generateBtn = document.getElementById('generateBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const resultTextarea = document.getElementById('result');
+/* === メインのコンテナ（白い枠） === */
+.container {
+    background-color: #ffffff;
+    padding: 2rem 2.5rem;
+    border-radius: 20px; /* 角をしっかり丸める */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 柔らかい影 */
+    width: 90%;
+    max-width: 800px;
+    border: 1px solid #e2e8f0;
+}
 
-    // 「生成」ボタンの処理
-    generateBtn.addEventListener('click', () => {
-        const commandParts = [];
+/* === 見出し === */
+h1 {
+    font-size: 2rem;
+    text-align: center;
+    color: #2c5282; /* 基調色の濃いブルー */
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
 
-        // 1. キーワード
-        const allWords = allWordsInput.value.trim();
-        if (allWords) commandParts.push(allWords);
+p {
+    text-align: center;
+    color: #718096; /* 少し薄めのグレー */
+    margin-bottom: 2.5rem;
+}
 
-        const exactPhrase = exactPhraseInput.value.trim();
-        if (exactPhrase) commandParts.push(`"${exactPhrase}"`);
+/* === 各セクションの枠 === */
+fieldset {
+    border: 1px solid #cbd5e0;
+    border-radius: 12px; /* コンテナより少し控えめな角丸 */
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
 
-        const anyWords = anyWordsTextarea.value.trim().split('\n').filter(w => w.trim()).map(w => w.trim()).join(' OR ');
-        if (anyWords) commandParts.push(`(${anyWords})`);
-        
-        const noneWords = noneWordsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => `-${w.trim()}`).join(' ');
-        if (noneWords) commandParts.push(noneWords);
+legend {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c5282; /* 濃いブルー */
+    padding: 0 0.5em;
+    margin-left: 1rem;
+}
 
-        const hashtags = hashtagsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => w.startsWith('#') ? w.trim() : `#${w.trim()}`).join(' ');
-        if (hashtags) commandParts.push(hashtags);
+/* === フォームのグリッドレイアウト === */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
 
-        // 2. アカウント
-        const fromUser = fromUserInput.value.trim();
-        if (fromUser) commandParts.push(`from:${fromUser.replace('@', '')}`);
+.form-group:has(textarea) {
+    grid-column: 1 / -1;
+}
 
-        const toUser = toUserInput.value.trim();
-        if (toUser) commandParts.push(`to:${toUser.replace('@', '')}`);
-        
-        const mentionUser = mentionUserInput.value.trim();
-        if (mentionUser) commandParts.push(`@${mentionUser.replace('@', '')}`);
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
 
-        // 3. フィルター
-        const replyVal = repliesFilter.value;
-        if (replyVal === 'only') commandParts.push('filter:replies');
-        if (replyVal === 'exclude') commandParts.push('-filter:replies');
+/* === 入力欄のデザイン === */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px; /* 角丸 */
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
 
-        const linkVal = linksFilter.value;
-        if (linkVal === 'only') commandParts.push('filter:links');
-        if (linkVal === 'exclude') commandParts.push('-filter:links');
-        
-        // 4. エンゲージメント
-        const minReplies = minRepliesInput.value;
-        if (minReplies > 0) commandParts.push(`min_replies:${minReplies}`);
-        
-        const minLikes = minLikesInput.value;
-        if (minLikes > 0) commandParts.push(`min_faves:${minLikes}`);
-        
-        const minRetweets = minRetweetsInput.value;
-        if (minRetweets > 0) commandParts.push(`min_retweets:${minRetweets}`);
-        
-        // 5. 日付
-        const sinceDate = sinceDateInput.value;
-        if (sinceDate) commandParts.push(`since:${sinceDate}`);
-        
-        const untilDate = untilDateInput.value;
-        if (untilDate) commandParts.push(`until:${untilDate}`);
+/* 入力欄を選択したときのハイライト */
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #4299e1; /* 明るいブルー */
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
 
-        // 最終的なコマンドを組み立てて表示
-        resultTextarea.value = commandParts.join(' ');
-    });
-    
-    // 「リセット」ボタンの処理
-    resetBtn.addEventListener('click', () => {
-        form.reset();
-        resultTextarea.value = '';
-    });
+textarea {
+    resize: vertical;
+}
 
-    // 「コピー」ボタンの処理
-    copyBtn.addEventListener('click', () => {
-        const command = resultTextarea.value;
-        if (command) {
-            navigator.clipboard.writeText(command).then(() => {
-                const originalText = copyBtn.textContent;
-                copyBtn.textContent = 'コピー完了!';
-                copyBtn.style.backgroundColor = '#2a9c43';
-                setTimeout(() => {
-                    copyBtn.textContent = originalText;
-                    copyBtn.style.backgroundColor = '#42b72a';
-                }, 2000);
-            }).catch(err => {
-                console.error('コピーに失敗しました', err);
-                alert('コピーに失敗しました。');
-            });
-        }
-    });
-});
+/* === ボタンエリア === */
+.output-section {
+    margin-top: 2rem;
+    position: relative;
+}
+
+.buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+button {
+    flex-grow: 1;
+    padding: 0.8rem 1rem;
+    font-size: 1.1rem;
+    font-weight
