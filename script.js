@@ -9,9 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fromUserInput = document.getElementById('from-user');
     const toUserInput = document.getElementById('to-user');
     const mentionUserInput = document.getElementById('mention-user');
-    // ▼▼▼ ここから追加 ▼▼▼
     const excludeUserInput = document.getElementById('exclude-user'); 
-    // ▲▲▲ ここまで追加 ▲▲▲
     const repliesFilter = document.getElementById('replies-filter');
     const linksFilter = document.getElementById('links-filter');
     const minRepliesInput = document.getElementById('min-replies');
@@ -29,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     generateBtn.addEventListener('click', () => {
         const commandParts = [];
 
-        // 1. キーワード (変更なし)
+        // 1. キーワード
         const allWords = allWordsInput.value.trim();
         if (allWords) commandParts.push(allWords);
 
@@ -55,12 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const mentionUser = mentionUserInput.value.trim();
         if (mentionUser) commandParts.push(`@${mentionUser.replace('@', '')}`);
         
-        // ▼▼▼ ここから追加 ▼▼▼
         const excludeUser = excludeUserInput.value.trim();
         if (excludeUser) commandParts.push(`-from:${excludeUser.replace('@', '')}`);
-        // ▲▲▲ ここまで追加 ▲▲▲
 
-        // 3. フィルター (変更なし)
+        // 3. フィルター
         const replyVal = repliesFilter.value;
         if (replyVal === 'only') commandParts.push('filter:replies');
         if (replyVal === 'exclude') commandParts.push('-filter:replies');
@@ -69,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (linkVal === 'only') commandParts.push('filter:links');
         if (linkVal === 'exclude') commandParts.push('-filter:links');
         
-        // 4. エンゲージメント (変更なし)
+        // 4. エンゲージメント
         const minReplies = minRepliesInput.value;
         if (minReplies > 0) commandParts.push(`min_replies:${minReplies}`);
         
@@ -79,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const minRetweets = minRetweetsInput.value;
         if (minRetweets > 0) commandParts.push(`min_retweets:${minRetweets}`);
         
-        // 5. 日付 (変更なし)
+        // 5. 日付
         const sinceDate = sinceDateInput.value;
         if (sinceDate) commandParts.push(`since:${sinceDate}`);
         
@@ -90,13 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
         resultTextarea.value = commandParts.join(' ');
     });
     
-    // 「リセット」ボタンの処理 (変更なし)
+    // 「リセット」ボタンの処理
     resetBtn.addEventListener('click', () => {
         form.reset();
         resultTextarea.value = '';
     });
 
-    // 「コピー」ボタンの処理 (変更なし)
+    // 「コピー」ボタンの処理
     copyBtn.addEventListener('click', () => {
         const command = resultTextarea.value;
         if (command) {
