@@ -1,142 +1,117 @@
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f0f2f5;
-    color: #1c1e21;
-    line-height: 1.6;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // フォームの要素をすべて取得
+    const form = document.getElementById('search-form');
+    const allWordsInput = document.getElementById('all-words');
+    const exactPhraseInput = document.getElementById('exact-phrase');
+    const anyWordsTextarea = document.getElementById('any-words');
+    const noneWordsInput = document.getElementById('none-words');
+    const hashtagsInput = document.getElementById('hashtags');
+    const fromUserInput = document.getElementById('from-user');
+    const toUserInput = document.getElementById('to-user');
+    const mentionUserInput = document.getElementById('mention-user');
+    // ▼▼▼ ここから追加 ▼▼▼
+    const excludeUserInput = document.getElementById('exclude-user'); 
+    // ▲▲▲ ここまで追加 ▲▲▲
+    const repliesFilter = document.getElementById('replies-filter');
+    const linksFilter = document.getElementById('links-filter');
+    const minRepliesInput = document.getElementById('min-replies');
+    const minLikesInput = document.getElementById('min-likes');
+    const minRetweetsInput = document.getElementById('min-retweets');
+    const sinceDateInput = document.getElementById('since-date');
+    const untilDateInput = document.getElementById('until-date');
 
-.container {
-    background-color: #ffffff;
-    padding: 1.5rem 2rem;
-    margin: 2rem auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 800px;
-}
+    const generateBtn = document.getElementById('generateBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resultTextarea = document.getElementById('result');
 
-h1 {
-    font-size: 1.8rem;
-    text-align: center;
-    color: #1DA1F2; /* X Blue */
-    margin-bottom: 0.5rem;
-}
+    // 「生成」ボタンの処理
+    generateBtn.addEventListener('click', () => {
+        const commandParts = [];
 
-p {
-    text-align: center;
-    color: #606770;
-    margin-bottom: 2rem;
-}
+        // 1. キーワード (変更なし)
+        const allWords = allWordsInput.value.trim();
+        if (allWords) commandParts.push(allWords);
 
-fieldset {
-    border: 1px solid #dddfe2;
-    border-radius: 6px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
+        const exactPhrase = exactPhraseInput.value.trim();
+        if (exactPhrase) commandParts.push(`"${exactPhrase}"`);
 
-legend {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #1DA1F2;
-    padding: 0 0.5em;
-}
+        const anyWords = anyWordsTextarea.value.trim().split('\n').filter(w => w.trim()).map(w => w.trim()).join(' OR ');
+        if (anyWords) commandParts.push(`(${anyWords})`);
+        
+        const noneWords = noneWordsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => `-${w.trim()}`).join(' ');
+        if (noneWords) commandParts.push(noneWords);
 
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-}
+        const hashtags = hashtagsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => w.startsWith('#') ? w.trim() : `#${w.trim()}`).join(' ');
+        if (hashtags) commandParts.push(hashtags);
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
+        // 2. アカウント
+        const fromUser = fromUserInput.value.trim();
+        if (fromUser) commandParts.push(`from:${fromUser.replace('@', '')}`);
 
-/* 2列にまたがる要素 */
-.form-group:has(textarea) {
-    grid-column: 1 / -1;
-}
+        const toUser = toUserInput.value.trim();
+        if (toUser) commandParts.push(`to:${toUser.replace('@', '')}`);
+        
+        const mentionUser = mentionUserInput.value.trim();
+        if (mentionUser) commandParts.push(`@${mentionUser.replace('@', '')}`);
+        
+        // ▼▼▼ ここから追加 ▼▼▼
+        const excludeUser = excludeUserInput.value.trim();
+        if (excludeUser) commandParts.push(`-from:${excludeUser.replace('@', '')}`);
+        // ▲▲▲ ここまで追加 ▲▲▲
 
-label {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
+        // 3. フィルター (変更なし)
+        const replyVal = repliesFilter.value;
+        if (replyVal === 'only') commandParts.push('filter:replies');
+        if (replyVal === 'exclude') commandParts.push('-filter:replies');
 
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select,
-textarea {
-    width: 100%;
-    padding: 0.7rem;
-    border: 1px solid #dddfe2;
-    border-radius: 6px;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
+        const linkVal = linksFilter.value;
+        if (linkVal === 'only') commandParts.push('filter:links');
+        if (linkVal === 'exclude') commandParts.push('-filter:links');
+        
+        // 4. エンゲージメント (変更なし)
+        const minReplies = minRepliesInput.value;
+        if (minReplies > 0) commandParts.push(`min_replies:${minReplies}`);
+        
+        const minLikes = minLikesInput.value;
+        if (minLikes > 0) commandParts.push(`min_faves:${minLikes}`);
+        
+        const minRetweets = minRetweetsInput.value;
+        if (minRetweets > 0) commandParts.push(`min_retweets:${minRetweets}`);
+        
+        // 5. 日付 (変更なし)
+        const sinceDate = sinceDateInput.value;
+        if (sinceDate) commandParts.push(`since:${sinceDate}`);
+        
+        const untilDate = untilDateInput.value;
+        if (untilDate) commandParts.push(`until:${untilDate}`);
 
-textarea {
-    resize: vertical;
-}
+        // 最終的なコマンドを組み立てて表示
+        resultTextarea.value = commandParts.join(' ');
+    });
+    
+    // 「リセット」ボタンの処理 (変更なし)
+    resetBtn.addEventListener('click', () => {
+        form.reset();
+        resultTextarea.value = '';
+    });
 
-.output-section {
-    margin-top: 2rem;
-    position: relative;
-}
-
-.buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-button {
-    flex-grow: 1;
-    padding: 0.8rem 1rem;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-button:active {
-    transform: scale(0.98);
-}
-
-button.primary {
-    color: #ffffff;
-    background-color: #1DA1F2;
-}
-
-button.primary:hover {
-    background-color: #1a91da;
-}
-
-#resetBtn {
-    background-color: #e4e6eb;
-    color: #1c1e21;
-}
-#resetBtn:hover {
-    background-color: #d8dbdf;
-}
-
-
-#copyBtn {
-    position: absolute;
-    top: 6.2rem; /* 位置を調整 */
-    right: 10px;
-    width: auto;
-    flex-grow: 0;
-    padding: 0.3rem 0.8rem;
-    font-size: 0.9rem;
-    background-color: #42b72a;
-    color: white;
-}
-
-#copyBtn:hover {
-    background-color: #36a420;
-}
+    // 「コピー」ボタンの処理 (変更なし)
+    copyBtn.addEventListener('click', () => {
+        const command = resultTextarea.value;
+        if (command) {
+            navigator.clipboard.writeText(command).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'コピー完了!';
+                copyBtn.style.backgroundColor = '#2a9c43';
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.backgroundColor = '#42b72a';
+                }, 2000);
+            }).catch(err => {
+                console.error('コピーに失敗しました', err);
+                alert('コピーに失敗しました。');
+            });
+        }
+    });
+});
