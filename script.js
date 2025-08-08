@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const anyWordsTextarea = document.getElementById('any-words');
     const noneWordsInput = document.getElementById('none-words');
     const hashtagsInput = document.getElementById('hashtags');
+    // ▼▼▼ ここから追加 ▼▼▼
+    const excludeHashtagsInput = document.getElementById('exclude-hashtags');
+    // ▲▲▲ ここまで追加 ▲▲▲
     const fromUserInput = document.getElementById('from-user');
     const toUserInput = document.getElementById('to-user');
     const mentionUserInput = document.getElementById('mention-user');
@@ -42,6 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const hashtags = hashtagsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => w.startsWith('#') ? w.trim() : `#${w.trim()}`).join(' ');
         if (hashtags) commandParts.push(hashtags);
+        
+        // ▼▼▼ ここから追加 ▼▼▼
+        const excludeHashtags = excludeHashtagsInput.value.trim().split(/\s+/).filter(w => w.trim()).map(w => `-#${w.trim().replace(/^#/, '')}`).join(' ');
+        if (excludeHashtags) commandParts.push(excludeHashtags);
+        // ▲▲▲ ここまで追加 ▲▲▲
 
         // 2. アカウント
         const fromUser = fromUserInput.value.trim();
@@ -102,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 copyBtn.style.backgroundColor = '#2a9c43';
                 setTimeout(() => {
                     copyBtn.textContent = originalText;
-                    copyBtn.style.backgroundColor = '#42b72a';
+                    copyBtn.style.backgroundColor = '#38a169';
                 }, 2000);
             }).catch(err => {
                 console.error('コピーに失敗しました', err);
