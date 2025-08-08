@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X(Twitter) 検索コマンドジェネレーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>X(Twitter) 検索コマンドジェネレーター</h1>
+        <p>キーワードを改行で区切って入力してください。<br>入力されたキーワードのいずれかを含むポスト（OR検索）用のコマンドを生成します。</p>
+
+        <div class="input-section">
+            <label for="keywords">キーワードリスト:</label>
+            <textarea id="keywords" rows="10" placeholder="例：&#10;プレゼント企画&#10;キャンペーン&#10;ギブアウェイ"></textarea>
+        </div>
+
+        <button id="generateBtn">検索コマンドを生成</button>
+
+        <div class="output-section">
+            <label for="result">生成されたコマンド:</label>
+            <textarea id="result" rows="5" readonly></textarea>
+            <button id="copyBtn">コピー</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
