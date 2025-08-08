@@ -3,26 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X(Twitter) 検索コマンドジェネレーター</title>
+    <title>高機能版 X(Twitter) 検索コマンドジェネレーター</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>X(Twitter) 検索コマンドジェネレーター</h1>
-        <p>キーワードを改行で区切って入力してください。<br>入力されたキーワードのいずれかを含むポスト（OR検索）用のコマンドを生成します。</p>
+        <h1>高機能版 X 検索コマンドジェネレーター</h1>
+        <p>必要な項目を入力して、複雑な検索コマンドを簡単に作成しましょう。</p>
 
-        <div class="input-section">
-            <label for="keywords">キーワードリスト:</label>
-            <textarea id="keywords" rows="10" placeholder="例：&#10;プレゼント企画&#10;キャンペーン&#10;ギブアウェイ"></textarea>
-        </div>
+        <form id="search-form">
+            <fieldset>
+                <legend>キーワード</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="all-words">次のキーワードをすべて含む (AND)</label>
+                        <input type="text" id="all-words" placeholder="例: 猫 かわいい">
+                    </div>
+                    <div class="form-group">
+                        <label for="exact-phrase">この語句を含む (完全一致)</label>
+                        <input type="text" id="exact-phrase" placeholder="例: 保護猫を飼いたい">
+                    </div>
+                    <div class="form-group">
+                        <label for="any-words">次のキーワードのいずれかを含む (OR)</label>
+                        <textarea id="any-words" rows="3" placeholder="例:&#10;プレゼント企画&#10;キャンペーン"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="none-words">次のキーワードを含まない (除外)</label>
+                        <input type="text" id="none-words" placeholder="例: 犬 譲渡">
+                    </div>
+                    <div class="form-group">
+                        <label for="hashtags">次のハッシュタグを含む</label>
+                        <input type="text" id="hashtags" placeholder="例: #猫のいる暮らし #cat">
+                    </div>
+                </div>
+            </fieldset>
 
-        <button id="generateBtn">検索コマンドを生成</button>
+            <fieldset>
+                <legend>アカウント</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="from-user">このアカウントから送信</label>
+                        <input type="text" id="from-user" placeholder="例: gundam_info">
+                    </div>
+                    <div class="form-group">
+                        <label for="to-user">このアカウントへの返信</label>
+                        <input type="text" id="to-user" placeholder="例: UN_NERV">
+                    </div>
+                    <div class="form-group">
+                        <label for="mention-user">このアカウントへのメンション</label>
+                        <input type="text" id="mention-user" placeholder="例: Xcorp">
+                    </div>
+                </div>
+            </fieldset>
 
-        <div class="output-section">
-            <label for="result">生成されたコマンド:</label>
-            <textarea id="result" rows="5" readonly></textarea>
-            <button id="copyBtn">コピー</button>
-        </div>
+            <fieldset>
+                <legend>フィルター</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="replies-filter">返信</label>
+                        <select id="replies-filter">
+                            <option value="">指定なし</option>
+                            <option value="only">返信のみ</option>
+                            <option value="exclude">返信を除外</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="links-filter">リンク</label>
+                        <select id="links-filter">
+                            <option value="">指定なし</option>
+                            <option value="only">リンクを含むポストのみ</option>
+                            <option value="exclude">リンクを含むポストを除外</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>エンゲージメント</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="min-replies">最小返信数</label>
+                        <input type="number" id="min-replies" min="0" placeholder="例: 10">
+                    </div>
+                    <div class="form-group">
+                        <label for="min-likes">最小いいね数</label>
+                        <input type="number" id="min-likes" min="0" placeholder="例: 100">
+                    </div>
+                    <div class="form-group">
+                        <label for="min-retweets">最小リツイート数</label>
+                        <input type="number" id="min-retweets" min="0" placeholder="例: 50">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>日付</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="since-date">開始日</label>
+                        <input type="date" id="since-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="until-date">終了日</label>
+                        <input type="date" id="until-date">
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="output-section">
+                <div class="buttons">
+                    <button type="button" id="generateBtn" class="primary">検索コマンドを生成</button>
+                    <button type="button" id="resetBtn">リセット</button>
+                </div>
+                <label for="result">生成されたコマンド:</label>
+                <textarea id="result" rows="5" readonly></textarea>
+                <button type="button" id="copyBtn">コピー</button>
+            </div>
+        </form>
     </div>
     <script src="script.js"></script>
 </body>
