@@ -17,25 +17,29 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="all-words">次のキーワードをすべて含む (AND)</label>
-                        <input type="text" id="all-words" placeholder="例: 猫 かわいい">
+                        <input type="text" id="all-words" placeholder="例: Vketちゃん かわいい">
                     </div>
                     <div class="form-group">
                         <label for="exact-phrase">この語句を含む (完全一致)</label>
-                        <input type="text" id="exact-phrase" placeholder="例: 保護猫を飼いたい">
+                        <input type="text" id="exact-phrase" placeholder="例: バーチャルマーケット">
                     </div>
                     <div class="form-group">
                         <label for="any-words">次のキーワードのいずれかを含む (OR)</label>
-                        <textarea id="any-words" rows="3" placeholder="例:&#10;プレゼント企画&#10;キャンペーン"></textarea>
+                        <textarea id="any-words" rows="3" placeholder="例:&#10;Vket&#10;Vケット"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="none-words">次のキーワードを含まない (除外)</label>
-                        <input type="text" id="none-words" placeholder="例: 犬 譲渡">
+                        <input type="text" id="none-words" placeholder="例: VRM">
                     </div>
                     <div class="form-group">
                         <label for="hashtags">次のハッシュタグを含む</label>
-                        <input type="text" id="hashtags" placeholder="例: #猫のいる暮らし #cat">
+                        <input type="text" id="hashtags" placeholder="例: Vket VketCloud (#なしでもOK)">
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="exclude-hashtags">次のハッシュタグを含まない (除外)</label>
+                        <input type="text" id="exclude-hashtags" placeholder="例: VRChat">
+                    </div>
+                    </div>
             </fieldset>
 
             <fieldset>
@@ -43,15 +47,15 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="from-user">このアカウントから送信</label>
-                        <input type="text" id="from-user" placeholder="例: gundam_info">
+                        <input type="text" id="from-user" placeholder="例: VketCloud">
                     </div>
                     <div class="form-group">
                         <label for="to-user">このアカウントへの返信</label>
-                        <input type="text" id="to-user" placeholder="例: UN_NERV">
+                        <input type="text" id="to-user" placeholder="例: VketKaichou">
                     </div>
                     <div class="form-group">
                         <label for="mention-user">このアカウントへのメンション</label>
-                        <input type="text" id="mention-user" placeholder="例: Xcorp">
+                        <input type="text" id="mention-user" placeholder="例: VketChan">
                     </div>
                     <div class="form-group">
                         <label for="exclude-user">このアカウントからのポストを除外</label>
@@ -59,7 +63,7 @@
                     </div>
                 </div>
             </fieldset>
-
+            
             <fieldset>
                 <legend>フィルター</legend>
                 <div class="form-grid">
